@@ -46,9 +46,11 @@ def ask_pdf():
     query = data.get("query")  # Get the question from the request
     
     print(f"PDF_query: {query}")
-
+   
     print("Loading Vector store")
-    vecotor_store = Chroma(persist_directory=folder_path, embedding_function=embeddings)
+    vecotor_store = Chroma(persist_directory=folder_path, embedding_function=embeddings
+    )
+    vecotor_store.persist()
 
     print("Creating chain")
     retriever = vecotor_store.as_retriever(
@@ -63,7 +65,7 @@ def ask_pdf():
     sources = []
     for doc in result["context"]:
         sources.append(
-            {"source": doc.metadata["sources"], "page_content": doc.page_content}
+            {"source": doc.metadata["source"], "page_content": doc.page_content}
         )
     pdf_response = {"answer": result["answer"],"sources": sources}
     return (pdf_response)
